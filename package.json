@@ -1,0 +1,27 @@
+{
+  "name": "rtestoniapublicvehicles",
+  "version": "1.0.0",
+  "description": "Broker service for real time public transport vehicles data",
+  "main": "index.js",
+  "repository": {},
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"No tests specified\" && exit 1"
+  },
+  "keywords": [
+    "mqtt",
+    "mosca"
+  ],
+  "author": "Dolmit",
+  "license": "ISC",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "https": "^1.0.0",
+    "moment": "~2.20.1",
+    "moment-timezone": "~0.5.14",
+    "mosca": "^2.8.3",
+    "mqtt": "^2.18.8",
+    "mqtt-ws": "^0.2.0",
+    "ws": "^6.2.1"
+  }
+}
