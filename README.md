@@ -7,4 +7,4 @@ to build and run:
 
 Docker build -t rt/estonia .
 
-Docker run rt/estonia
+docker run -d rt/estonia
