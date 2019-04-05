@@ -12,9 +12,13 @@ RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production\
 
-ENV MQTTCLIENTPORT=1883
+ENV \
+    MQTTCLIENTURL='mqtt://localhost:1883'\
+    MQTTCLIENTUSER='publisher'\
+    MQTTCLIENTPASS='Th1s1sThePassw0rd!'
+
 
 # Bundle app source
 COPY . .
 
-CMD npm start -- $MQTTCLIENTPORT
+CMD npm start -- $MQTTCLIENTURL $MQTTCLIENTUSER $MQTTCLIENTPASS

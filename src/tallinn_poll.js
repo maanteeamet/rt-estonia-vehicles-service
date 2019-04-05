@@ -7,7 +7,7 @@
   col_names = ['type', 'lineNumber', 'longitude', 'latitude', 'speed', 'heading', 'vehicleNumber'];
 
   numberToTypeMap = {
-    '1': 'trolley',
+    '1': 'subway',
     '2': 'bus',
     '3': 'tram'
   };
@@ -41,23 +41,71 @@
       return route.timeout = setTimeout(timeout_handler, delay);
     }
 
-    update_location(info) {
+    getRouteGtfsIdFromOTP(info, updateLoc) {
+      if (parseInt(info.lineNumber) === 0) {
+        return;
+      }
+      info.type = numberToTypeMap[info.type];
+
+      var body = JSON.stringify({'query': '{ routes ( name: "' + info.lineNumber + '", modes: "' + info.type.toUpperCase() + '" ) { shortName gtfsId mode  } }'});
+      var options = {
+        hostname: 'uvn-233-169.ams01.zonevs.eu',
+        port: 4434,
+        path: '/otp/routers/estonia/index/graphql',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': body.length
+        }
+      };
+
+      var req = https.request(options, (resp) => {
+        var data = '', self = this;
+        resp.on('data', (chunk) => {
+          return data += chunk;
+        });
+        return resp.on('end', (chunk) => {
+          if (resp.statusCode !== 200) {
+            console.log(`request failed: code ${resp.statusCode}`);
+          }
+          var routes = JSON.parse(data).data.routes;
+          if (routes.length > 0) {
+            info.gtfsId = routes.filter(function (route) {
+              return (route.shortName === info.lineNumber) && (route.mode === info.type.toUpperCase());
+            })[0].gtfsId;
+
+            updateLoc(info, self);
+          }
+        });
+      });
+
+      req.on('error', (e) => {
+      });
+
+      req.write(body);
+      req.end();
+    }
+
+    update_location(info, self) {
+      const date = new Date();
       var out_info, path, route, vehicle_id, latitude, longitude;
 
       latitude = info.latitude.substring(0, 2) + "." + info.latitude.substring(2, info.latitude.length);
       longitude = info.longitude.substring(0, 2) + "." + info.longitude.substring(2, info.longitude.length);
+
       out_info = {
         vehicle: {
           id: info.vehicleNumber,
-          label: numberToTypeMap[info.type] + info.vehicleNumber,
-          type: numberToTypeMap[info.type]
+          label: info.type + info.vehicleNumber,
+          type: info.type
         },
         trip: {
+          gtfsId: info.gtfsId.split(':')[1],
           route: info.lineNumber,
-          direction: -1,
+          direction: 0,
           operator: "Tallinna TA",
           headsign: info.lineNumber,
-          start_time: new Date().getHours() + ":" + new Date().getMinutes()
+          start_time: ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2)
         },
         position: {
           latitude: parseFloat(latitude),
@@ -74,7 +122,7 @@
       route = info.route;
       vehicle_id = out_info.vehicle.id.replace(" ", "_");
       path = `/location/tallinn/${route}/${vehicle_id}`;
-      return this.callback(path, out_info, this.args);
+      return self.callback(path, out_info, self.args);
     }
 
     poll_route() {
@@ -110,7 +158,7 @@
             if (!info.lineNumber) {
               continue;
             }
-            this.update_location(info);
+            this.getRouteGtfsIdFromOTP(info, this.update_location);
           }
           return this.set_poll_timer("", false);
         });

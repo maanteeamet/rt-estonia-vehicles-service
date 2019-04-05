@@ -3,12 +3,11 @@ const tallinn_poll = require('./tallinn_poll.js');
 const mqtt_publisher = require('./mqtt_publisher.js');
 
 class RTDataSync {
-  constructor(port) {
-    this.port = port;
-    this.clientUrl = 'mqtt://localhost:' + this.port;
+  constructor(mqttClient) {
+    this.clientUrl = mqttClient.url;
     let opts = {
-      username: 'publisher',
-      password: 'Th1s1sThePassw0rd!'
+      username: mqttClient.username,
+      password: mqttClient.password
     };
     this.mqttClient = mqtt.connect(this.clientUrl, opts);
   }

@@ -26,8 +26,8 @@
       return results;
     })();
     geohash = Math.floor(x) + ";" + Math.floor(y) + "/" + digits.join('/');
-    headsign = "XXX"; // not available from current sources
-    return `/hfp/v1/journey/ongoing/${msg.vehicle.type}/${msg.vehicle.id}/${msg.vehicle.id}/${msg.trip.route}/${msg.trip.direction}/${headsign}/${msg.trip.start_time}/${msg.position.next_stop}/` + geohash;
+    headsign = msg.trip.route; // not available from current sources
+    return `/hfp/v1/journey/ongoing/${msg.vehicle.type}/${msg.vehicle.id}/${msg.vehicle.id}/${msg.trip.gtfsId}/${msg.trip.direction}/${headsign}/${msg.trip.start_time}/${msg.position.next_stop}/` + geohash;
   };
 
   to_mqtt_payload = function(msg) {

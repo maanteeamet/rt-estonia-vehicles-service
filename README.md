@@ -5,6 +5,8 @@ And pushing it to localhost mqtt broker on port 1883 which is described in Docke
 
 to build and run:
 
-Docker build -t rt/estonia .
+Write new password from mosquitto-server/config/passwd
+
+docker build -t rt/estonia .
 
 docker run -d --network="host" rt/estonia
