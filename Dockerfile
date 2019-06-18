@@ -14,6 +14,9 @@ RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production\
 
+RUN echo "publisher:$JEN_MQTTCLIENTPASS" > mosquitto-server/config/passwd
+RUN mosquitto_passwd -U mosquitto-server/config/passwd
+
 ENV \
     MQTTCLIENTURL='mqtt://localhost:1883'\
     MQTTCLIENTUSER='publisher'\
@@ -23,4 +26,4 @@ ENV \
 # Bundle app source
 COPY . .
 
-CMD npm start -- $MQTTCLIENTURL $MQTTCLIENTUSER $MQTTCLIENTPASS
+CMD npm start -- $MQTTCLIENTURL $MQTTCLIENTUSER $JEN_MQTTCLIENTPASS
