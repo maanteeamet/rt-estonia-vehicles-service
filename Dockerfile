@@ -14,6 +14,7 @@ RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production\
 
+RUN mkdir -p mosquitto-server/config
 RUN echo "publisher:sHalLnoTpaSS" > mosquitto-server/config/passwd
 RUN mosquitto_passwd -U mosquitto-server/config/passwd
 
