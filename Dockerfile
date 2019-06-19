@@ -11,7 +11,7 @@ RUN cd /etc/apt/sources.list.d/
 RUN wget http://repo.mosquitto.org/debian/mosquitto-jessie.list
 RUN apt-get install mosquitto -y -q
 RUN apt-get install mosquitto-clients -y -q
-RUN service stop mosquitto
+RUN /etc/init.d/mosquitto stop
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
