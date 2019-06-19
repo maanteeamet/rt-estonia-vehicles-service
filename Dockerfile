@@ -5,13 +5,11 @@ WORKDIR /usr/src/app
 
 RUN apt-get update && apt-get install -y libzmq3-dev
 
-RUN wget http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key
-RUN apt-key add mosquitto-repo.gpg.key
-RUN cd /etc/apt/sources.list.d/
-RUN wget http://repo.mosquitto.org/debian/mosquitto-jessie.list
+RUN apt-add-repository ppa:mosquitto-dev/mosquitto-ppa
 RUN apt-get update
-RUN apt-get install mosquitto -y -q
-RUN stop mosquitto
+RUN apt-get install mosquitto
+RUN apt-get install mosquitto-clients
+RUN service stop mosquitto
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
