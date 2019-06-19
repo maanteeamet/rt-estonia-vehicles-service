@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y libzmq3-dev
 RUN wget http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key
 RUN apt-key add mosquitto-repo.gpg.key
 RUN cd /etc/apt/sources.list.d/
-RUN wget http://repo.mosquitto.org/debian/mosquitto-wheezy.list
+RUN wget http://repo.mosquitto.org/debian/mosquitto-jessie.list
 RUN apt-get update
 RUN apt-get install mosquitto
 RUN stop mosquitto
