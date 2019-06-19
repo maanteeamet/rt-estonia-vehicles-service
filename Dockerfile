@@ -5,8 +5,10 @@ WORKDIR /usr/src/app
 
 RUN apt-get update && apt-get install -y libzmq3-dev
 
-RUN apt-add-repository ppa:mosquitto-dev/mosquitto-ppa
-RUN apt-get update
+RUN wget http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key
+RUN apt-key add mosquitto-repo.gpg.key
+RUN cd /etc/apt/sources.list.d/
+RUN wget http://repo.mosquitto.org/debian/mosquitto-jessie.list
 RUN apt-get install mosquitto -y -q
 RUN apt-get install mosquitto-clients -y -q
 RUN service stop mosquitto
