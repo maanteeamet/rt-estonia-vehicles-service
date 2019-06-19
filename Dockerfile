@@ -7,8 +7,8 @@ RUN apt-get update && apt-get install -y libzmq3-dev
 
 RUN apt-add-repository ppa:mosquitto-dev/mosquitto-ppa
 RUN apt-get update
-RUN apt-get install mosquitto
-RUN apt-get install mosquitto-clients
+RUN apt-get install mosquitto -y -q
+RUN apt-get install mosquitto-clients -y -q
 RUN service stop mosquitto
 
 # Install app dependencies
