@@ -22,15 +22,16 @@ RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production\
 
-RUN mkdir -p mosquitto-server/config
-RUN echo "publisher:sHalLnoTpaSS" > mosquitto-server/config/passwd
-RUN mosquitto_passwd -U mosquitto-server/config/passwd
 
+#overrun when running docker package (-e)
 ENV \
     MQTTCLIENTURL='mqtt://localhost:1883'\
     MQTTCLIENTUSER='publisher'\
     MQTTCLIENTPASS='sHalLnoTpaSS'
 
+RUN mkdir -p mosquitto-server/config
+RUN echo "${MQTTCLIENTUSER}:${MQTTCLIENTPASS}" > mosquitto-server/config/passwd
+RUN mosquitto_passwd -U mosquitto-server/config/passwd
 
 # Bundle app source
 COPY . .
