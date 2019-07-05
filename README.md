@@ -4,6 +4,9 @@ This is a node js service for currently polling data from:
 And pushing it to localhost mqtt broker on port 1883 which is described in Dockerfile.
 
 to build and run:
+available --build-arg:
+MQTTCLIENTPASS
+OPTURL
 
 docker build -t rt/estonia --build-arg MQTTCLIENTPASS='newPassword' -f Dockerfile .
 
