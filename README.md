@@ -13,4 +13,4 @@ docker build -t rt/estonia --build-arg MQTTCLIENTPASS='newPassword' -f Dockerfil
 
 docker run -d --network="host" rt/estonia 
 
-should be run with mosquitto-server
+should be run after mosquitto-server
