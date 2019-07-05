@@ -3,18 +3,19 @@ const tallinn_poll = require('./tallinn_poll.js');
 const mqtt_publisher = require('./mqtt_publisher.js');
 
 class RTDataSync {
-  constructor(mqttClient) {
+  constructor(mqttClient, otpUrl) {
     this.clientUrl = mqttClient.url;
     let opts = {
       username: mqttClient.username,
       password: mqttClient.password
     };
+    this.otpUrl = otpUrl;
     this.mqttClient = mqtt.connect(this.clientUrl, opts);
   }
 
   syncTallinn() {
     console.log('Syncing Tallinn RT data to mqtt client ' + this.clientUrl);
-    new tallinn_poll.TallinnPollClient(this.handle_event, {mqttClient: this.mqttClient}).connect();
+    new tallinn_poll.TallinnPollClient(this.handle_event, {mqttClient: this.mqttClient}, this.otpUrl).connect();
   };
 
   handle_event(path, msg, args) {

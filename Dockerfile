@@ -5,14 +5,6 @@ WORKDIR /usr/src/app
 
 RUN apt-get update && apt-get install -y libzmq3-dev
 
-RUN wget http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key
-RUN apt-key add mosquitto-repo.gpg.key
-RUN cd /etc/apt/sources.list.d/
-RUN wget http://repo.mosquitto.org/debian/mosquitto-jessie.list
-RUN apt-get install mosquitto -y -q
-RUN apt-get install mosquitto-clients -y -q
-RUN /etc/init.d/mosquitto stop
-
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
@@ -22,18 +14,18 @@ RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production\
 
+ARG MQTTCLIENTPASS='sHalLnoTpaSS'
+ARG OPTURL='https://api.dev.peatus.ee/routing/v1/routers/estonia/index/graphql'
 
 #overrun when running docker package (-e)
 ENV \
+    OPTURL=${OPTURL}\
     MQTTCLIENTURL='mqtt://localhost:1883'\
     MQTTCLIENTUSER='publisher'\
-    MQTTCLIENTPASS='sHalLnoTpaSS'
+    MQTTCLIENTPASS=${MQTTCLIENTPASS}
 
-RUN mkdir -p mosquitto-server/config
-RUN echo "${MQTTCLIENTUSER}:${MQTTCLIENTPASS}" > mosquitto-server/config/passwd
-RUN mosquitto_passwd -U mosquitto-server/config/passwd
 
 # Bundle app source
 COPY . .
 
-CMD npm start -- $MQTTCLIENTURL $MQTTCLIENTUSER $MQTTCLIENTPASS
+CMD npm start -- $MQTTCLIENTURL $MQTTCLIENTUSER $MQTTCLIENTPASS $OPTURL

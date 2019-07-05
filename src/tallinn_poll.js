@@ -3,6 +3,7 @@
   var TallinnPollClient, col_names, https, numberToTypeMap;
 
   https = require('https');
+  request = require('request');
 
   col_names = ['type', 'lineNumber', 'longitude', 'latitude', 'speed', 'heading', 'vehicleNumber'];
 
@@ -13,13 +14,14 @@
   };
 
   TallinnPollClient = class TallinnPollClient {
-    constructor(callback, args) {
+    constructor(callback, args, otpUrl) {
       this.callback = callback;
       this.args = args;
       this.routes = {
         "": {}
       };
       this.poll_delay = 5;
+      this.otpUrl = otpUrl;
     }
 
     set_poll_timer(route_name, is_error) {
@@ -46,44 +48,24 @@
         return;
       }
       info.type = numberToTypeMap[info.type];
+      var bodyJson = {json: {query: '{ routes ( name: "' + info.lineNumber + '", modes: "' + info.type.toUpperCase() + '" ) { shortName gtfsId mode  } }'}};
 
-      var body = JSON.stringify({'query': '{ routes ( name: "' + info.lineNumber + '", modes: "' + info.type.toUpperCase() + '" ) { shortName gtfsId mode  } }'});
-      var options = {
-        hostname: 'uvn-233-169.ams01.zonevs.eu',
-        port: 4434,
-        path: '/otp/routers/estonia/index/graphql',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': body.length
+      request.post(this.otpUrl, bodyJson, (error, res, body) => {
+        var self = this;
+        if (error) {
+          console.error(error);
+          return
         }
-      };
+        var routes = body.data.routes;
+        if (routes.length > 0) {
+          info.gtfsId = routes.filter(function (route) {
+            return (route.shortName === info.lineNumber) && (route.mode === info.type.toUpperCase());
+          })[0].gtfsId;
 
-      var req = https.request(options, (resp) => {
-        var data = '', self = this;
-        resp.on('data', (chunk) => {
-          return data += chunk;
-        });
-        return resp.on('end', (chunk) => {
-          if (resp.statusCode !== 200) {
-            console.log(`request failed: code ${resp.statusCode}`);
-          }
-          var routes = JSON.parse(data).data.routes;
-          if (routes.length > 0) {
-            info.gtfsId = routes.filter(function (route) {
-              return (route.shortName === info.lineNumber) && (route.mode === info.type.toUpperCase());
-            })[0].gtfsId;
-
-            updateLoc(info, self);
-          }
-        });
+          updateLoc(info, self);
+        }
       });
 
-      req.on('error', (e) => {
-      });
-
-      req.write(body);
-      req.end();
     }
 
     update_location(info, self) {

@@ -2,8 +2,8 @@ const rt = require('./src/RTDataSync.js');
 const args = process.argv.splice(2);
 let mqttClientUrl = args[0] || 'mqtt://localhost:1883';
 let mqttClientUser = args[1] || 'publisher';
-let mqttClientPassword = args[2] || 'Th1s1sThePassw0rd!';
-
+let mqttClientPassword = args[2];
+let otpurl = args[3];
 let mqttClient =
   {
     url: mqttClientUrl,
@@ -11,7 +11,7 @@ let mqttClient =
     password: mqttClientPassword
   };
 
-let sync = new rt.RTDataSync(mqttClient);
+let sync = new rt.RTDataSync(mqttClient, otpurl);
 sync.syncTallinn();
 
 
