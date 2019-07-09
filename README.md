@@ -5,8 +5,13 @@ And pushing it to localhost mqtt broker on port 1883 which is described in Docke
 
 to build and run:
 available --build-arg:
+
 MQTTCLIENTPASS - should be same as mosquitto-server password
-OPTURL
+
+OTPURL - environment based OTPURL + /routing/v1/routers/estonia/index/graphql
+example:
+https://api.dev.peatus.ee/routing/v1/routers/estonia/index/graphql
+
 
 docker build -t rt/estonia --build-arg MQTTCLIENTPASS='newPassword' -f Dockerfile .
 
