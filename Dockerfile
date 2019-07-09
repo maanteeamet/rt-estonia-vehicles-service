@@ -15,11 +15,11 @@ RUN npm install
 # RUN npm ci --only=production\
 
 ARG MQTTCLIENTPASS='sHalLnoTpaSS'
-ARG OPTURL='https://api.dev.peatus.ee/routing/v1/routers/estonia/index/graphql'
+ARG OTPURL='https://api.dev.peatus.ee/routing/v1/routers/estonia/index/graphql'
 
 #overrun when running docker package (-e)
 ENV \
-    OPTURL=${OPTURL}\
+    OTPURL=${OPTURL}\
     MQTTCLIENTURL='mqtt://localhost:1883'\
     MQTTCLIENTUSER='publisher'\
     MQTTCLIENTPASS=${MQTTCLIENTPASS}
@@ -28,4 +28,4 @@ ENV \
 # Bundle app source
 COPY . .
 
-CMD npm start -- $MQTTCLIENTURL $MQTTCLIENTUSER $MQTTCLIENTPASS $OPTURL
+CMD npm start -- $MQTTCLIENTURL $MQTTCLIENTUSER $MQTTCLIENTPASS $OTPURL
