@@ -58,11 +58,14 @@
         }
         var routes = body.data.routes;
         if (routes.length > 0) {
-          info.gtfsId = routes.filter(function (route) {
+          let otpRoutes = routes.filter(function (route) {
             return (route.shortName === info.lineNumber) && (route.mode === info.type.toUpperCase());
-          })[0].gtfsId;
+          });
 
-          updateLoc(info, self);
+          otpRoutes.forEach((route) => {
+            const tempInfo = {...info, gtfsId: route.gtfsId};
+            updateLoc(tempInfo, self);
+          });
         }
       });
 
