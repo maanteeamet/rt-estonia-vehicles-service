@@ -55,6 +55,8 @@
         if (error) {
           console.error(error);
           return
+        } else if (!body.data) {
+          return;
         }
         var routes = body.data.routes;
         if (routes.length > 0) {
